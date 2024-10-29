@@ -1,0 +1,215 @@
+Flashcard App using React.js
+=============================
+
+This project demonstrates state management with React's useState and component-based architecture.
+---------------------------------------------------------------------------------------------------
+
+Project Structure
+/flashcard-app
+|-- /src
+|   |-- App.js
+|   |-- FlashCard.js
+|   |-- ProgressBar.js
+|   |-- index.css
+|   |-- index.js
+|-- package.json
+|-- README.md
+
+Step 1: Set Up React App
+If you don't already have a React app set up, create one using:
+
+npx create-react-app flashcard-app
+cd flashcard-app
+
+Step 2: Create Flashcards Component Architecture
+1. App.js: Main component managing the state of the flashcards.
+
+import React, { useState } from 'react';
+import FlashCard from './FlashCard';
+import ProgressBar from './ProgressBar';
+import './index.css';
+
+// Pre-defined flashcards
+const flashcards = [
+  { question: 'What is React?', answer: 'A JavaScript library for building user interfaces.' },
+  { question: 'What is a component in React?', answer: 'Reusable pieces of UI.' },
+  { question: 'What is state in React?', answer: 'A way to store data within a component.' },
+  { question: 'What are props in React?', answer: 'Data passed to components from their parent.' },
+  { question: 'What is the virtual DOM?', answer: 'A lightweight copy of the real DOM.' },
+];
+
+function App() {
+  const [currentCard, setCurrentCard] = useState(0); // Track the current flashcard index
+  const [flipped, setFlipped] = useState(false); // Track if the card is flipped
+
+  const nextCard = () => {
+    setCurrentCard((prev) => (prev + 1) % flashcards.length); // Loop back to the start
+    setFlipped(false); // Reset flip state
+  };
+
+  const prevCard = () => {
+    setCurrentCard((prev) => (prev - 1 + flashcards.length) % flashcards.length); // Handle previous card
+    setFlipped(false); // Reset flip state
+  };
+
+  return (
+    <div className="app">
+      <h1>JavaScript Flashcards</h1>
+      <ProgressBar current={currentCard} total={flashcards.length} />
+      <FlashCard
+        card={flashcards[currentCard]}
+        flipped={flipped}
+        onFlip={() => setFlipped(!flipped)}
+      />
+      <div className="controls">
+        <button onClick={prevCard}>Previous</button>
+        <button onClick={nextCard}>Next</button>
+      </div>
+    </div>
+  );
+}
+
+export default App;
+
+2. FlashCard.js: Component to render individual flashcards with flip functionality.
+
+import React from 'react';
+import './index.css';
+
+function FlashCard({ card, flipped, onFlip }) {
+  return (
+    <div className={`flashcard ${flipped ? 'flipped' : ''}`} onClick={onFlip}>
+      <div className="front">
+        <p>{card.question}</p>
+      </div>
+      <div className="back">
+        <p>{card.answer}</p>
+      </div>
+    </div>
+  );
+}
+
+export default FlashCard;
+
+3. ProgressBar.js: Component to display the user's progress.
+
+import React from 'react';
+import './index.css';
+
+function ProgressBar({ current, total }) {
+  const progress = ((current + 1) / total) * 100;
+
+  return (
+    <div className="progress-bar">
+      <div className="progress" style={{ width: `${progress}%` }}></div>
+      <p>
+        {current + 1} / {total}
+      </p>
+    </div>
+  );
+}
+
+export default ProgressBar;
+
+Step 3: Add CSS for Styling
+Create a index.css file to add some basic styling.
+
+body {
+  font-family: Arial, sans-serif;
+  background-color: #f4f4f4;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+}
+
+.app {
+  text-align: center;
+  background-color: white;
+  padding: 20px;
+  border-radius: 10px;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+  width: 300px;
+}
+
+.flashcard {
+  width: 100%;
+  height: 200px;
+  margin: 20px 0;
+  perspective: 1000px;
+  cursor: pointer;
+}
+
+.flashcard div {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  border-radius: 10px;
+  backface-visibility: hidden;
+  transition: transform 0.6s;
+  position: absolute;
+}
+
+.flashcard .front {
+  background-color: #4caf50;
+  color: white;
+}
+
+.flashcard .back {
+  background-color: #2196f3;
+  color: white;
+  transform: rotateY(180deg);
+}
+
+.flipped .front {
+  transform: rotateY(180deg);
+}
+
+.flipped .back {
+  transform: rotateY(0deg);
+}
+
+.controls {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 10px;
+}
+
+button {
+  padding: 10px;
+  background-color: #4caf50;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: background-color 0.3s;
+}
+
+button:hover {
+  background-color: #45a049;
+}
+
+.progress-bar {
+  background-color: #e0e0e0;
+  border-radius: 5px;
+  overflow: hidden;
+  margin-top: 10px;
+}
+
+.progress {
+  background-color: #4caf50;
+  height: 10px;
+  transition: width 0.3s;
+}
+
+Step 4: Run the App
+Install dependencies and run the React app:
+npm install
+npm start
+
+
+
